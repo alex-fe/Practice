@@ -1,3 +1,16 @@
+"""A word funnel is a series of words formed by removing one letter at a time
+from a starting word, keeping the remaining letters in order. For the purpose
+of this challenge, a word is defined as an entry in the enable1 word list.
+An example of a word funnel is:
+gnash => gash => ash => ah
+This word funnel has length 4, because there are 4 words in it.
+
+Given a word, determine the length of the longest word funnel that it starts.
+You may optionally also return the funnel itself (or any funnel tied for the
+longest, in the case of a tie).
+"""
+
+
 import time
 from urllib.request import urlopen
 
@@ -8,10 +21,7 @@ final = 1
 
 def funnel(word, counter, words):
     global final
-    if counter > final:
-        final = counter
-    else:
-        final = 1
+    final = counter if counter > final else 1
     for index in range(len(word)):
         newstr = word[:index] + word[index + 1:]
         if newstr in words:
@@ -20,12 +30,13 @@ def funnel(word, counter, words):
 
 
 if __name__ == '__main__':
-    words = urlopen(URL).read().decode("utf8").split('\n')
+    words = urlopen(URL).read().decode('utf8').split('\n')
+    tester_words = [
+        'gnash', 'princesses', 'turntables', 'implosive', 'programmer'
+    ]
     start = time.time()
-    print(funnel("gnash", 1, words))  # 4
-    print(funnel("princesses", 1, words))  # 9
-    print(funnel("turntables", 1, words))  # 5
-    print(funnel("implosive", 1, words))  # 1
-    print(funnel("programmer", 1, words))  # 2
+    for tester in tester_words:
+        out = funnel(tester, 1, words)
+        print('{}: {}'.format(tester, out))
     end = time.time()
     print(end-start)
