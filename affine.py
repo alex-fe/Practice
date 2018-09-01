@@ -1,12 +1,34 @@
 import collections
+import itertools
+import string
+
+COPRIMES = [3, 5, 7, 11, 15, 17, 19, 21, 23, 25]
 
 
-def decode(case):
-    pass
-    import pdb; pdb.set_trace()
+def decode(coded, a, b):
+    decoded = ''
+    for char in coded:
+        if char in string.whitespace:
+            value = ' '
+        elif char in string.punctuation:
+            value = char
+        else:
+            value = chr(((ord(char) - ord('a') - b) * a) % 26 + ord('a'))
+        decoded += value
+    return decoded
+
+
+def solve(case, dictionary):
+    for a, b in itertools.product(COPRIMES, range(26)):
+        result = decode(case.coded, a, b)
+        if all(word in dictionary for word in result.split()):
+            return result
 
 
 if __name__ == '__main__':
+    with open('./Supplimentary/dict.txt') as f:
+        dictionary = set(word.strip().lower() for word in f.readlines())
+
     TestCase = collections.namedtuple('TestCase', ['coded', 'decoded'])
     one = TestCase('NLWC WC M NECN', 'this is a test')
     two = TestCase(
@@ -29,5 +51,4 @@ if __name__ == '__main__':
     )
     test_cases = [one, two, two_bonus, three]
     for test_case in test_cases:
-        decode(test_case)
-        break
+        print(solve(test_case, dictionary))
